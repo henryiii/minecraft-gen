@@ -1,0 +1,13 @@
+name: minecraft-gen
+channels:
+  - conda-forge
+dependencies:
+  - python==3.11.*
+  - numpy
+  - matplotlib
+  - scipy
+  - scikit-image
+  - pillow
+  - noise
+  - nb_conda_kernels
+  - ipykernel
