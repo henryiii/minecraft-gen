@@ -21,3 +21,10 @@ Process taken:
     * Ran `ruff check --select=ALL --ignore=D,ANN,ERA,PLR,E703,E402,NPY002 MinecraftGenerator.ipynb minecraft_gen.py --fix`
     * Manually cleaned up a few things, like `np.clip` instead of custom lambda
     * Reran black
+* Work on random numbers and plotting
+    * Normalize plotting code to use `plt.subplots` and `ax`/`axs`
+    * Simplify some loops with `zip`
+    * Remove commented out code that wasn't working
+    * Simplify density example to a loop
+    * Pull RNG out of the one function that used it
+

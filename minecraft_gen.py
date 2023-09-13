@@ -238,20 +238,21 @@ def filter_map(h_map, smooth_h_map, x1, y1, x2, y2, a, b):
     return f(output_map.clip(0, 1))
 
 
+def _check_for_mult(a):
+    b = a[0]
+    for i in range(len(a) - 1):
+        if a[i] != b:
+            return 1
+    return 0
+
+
 def get_boundary(vor_map, kernel=1, *, size):
     boundary_map = np.zeros_like(vor_map, dtype=bool)
     n, m = vor_map.shape
 
-    def check_for_mult(a):
-        b = a[0]
-        for i in range(len(a) - 1):
-            if a[i] != b:
-                return 1
-        return 0
-
     for i in range(n):
         for j in range(m):
-            boundary_map[i, j] = check_for_mult(
+            boundary_map[i, j] = _check_for_mult(
                 vor_map[
                     np.clip(i - kernel, 0, size - 1) : np.clip(
                         i + kernel + 1, 0, size - 1
@@ -270,14 +271,15 @@ def filter_inbox(pts, *, size):
     return pts[inidx]
 
 
-def generate_trees(n, *, size):
-    trees = np.random.randint(0, size - 1, (n, 2))
+def generate_trees(trees, *, size):
     trees = relax(trees, size, k=10).astype(np.uint32)
     return filter_inbox(trees, size=size)
 
 
-def place_trees(n, mask, a=0.5, *, river_land_mask, adjusted_height_river_map, size):
-    trees = generate_trees(n, size=size)
+def place_trees(
+    trees, mask, a=0.5, *, river_land_mask, adjusted_height_river_map, size
+):
+    trees = generate_trees(trees, size=size)
     rr, cc = trees.T
 
     output_trees = np.zeros((size, size), dtype=bool)
