@@ -17,3 +17,7 @@ Process taken:
     * Fixed warning with divide by zero
     * Fixed warning about clipping to 0
     * Ran black on both (`pipx run black[jupyter] *.py *.ipynb`)
+* General cleanup (using Ruff)
+    * Ran `ruff check --select=ALL --ignore=D,ANN,ERA,PLR,E703,E402,NPY002 MinecraftGenerator.ipynb minecraft_gen.py --fix`
+    * Manually cleaned up a few things, like `np.clip` instead of custom lambda
+    * Reran black

@@ -1,10 +1,10 @@
 import numpy as np
-from scipy.spatial import Voronoi
-from skimage.draw import polygon
 from noise import snoise3
-from skimage import exposure
 from scipy import ndimage
 from scipy.interpolate import interp1d
+from scipy.spatial import Voronoi
+from skimage import exposure
+from skimage.draw import polygon
 
 
 def voronoi(points, size):
@@ -13,9 +13,7 @@ def voronoi(points, size):
     new_points = np.vstack([points, edge_points])
 
     # Calculate Voronoi tessellation
-    vor = Voronoi(new_points)
-
-    return vor
+    return Voronoi(new_points)
 
 
 def voronoi_map(vor, size):
@@ -31,7 +29,7 @@ def voronoi_map(vor, size):
         # Get pixels inside polygon
         rr, cc = polygon(x, y)
         # Remove pixels out of image bounds
-        in_box = np.where((0 <= rr) & (rr < size) & (0 <= cc) & (cc < size))
+        in_box = np.where((rr >= 0) & (rr < size) & (cc >= 0) & (cc < size))
         rr, cc = rr[in_box], cc[in_box]
         # Paint image
         vor_map[rr, cc] = i
@@ -70,7 +68,7 @@ def noise_map(size, res, seed, *, octaves=1, persistence=0.5, lacunarity=2.0, ma
                 for x in range(size)
             ]
             for y in range(size)
-        ]
+        ],
     )
 
 
@@ -82,7 +80,7 @@ def histeq(img, alpha=1):
 
 
 def average_cells(vor, data):
-    """Returns the average value of data inside every voronoi cell"""
+    """Return the average value of data inside every voronoi cell."""
     size = vor.shape[0]
     count = np.max(vor) + 1
 
@@ -95,9 +93,7 @@ def average_cells(vor, data):
             count[p] += 1
             sum_[p] += data[i, j]
 
-    average = np.divide(sum_, count, out=np.zeros_like(count), where=count != 0)
-
-    return average
+    return np.divide(sum_, count, out=np.zeros_like(count), where=count != 0)
 
 
 def fill_cells(vor, data):
@@ -178,7 +174,7 @@ def compute_normal_map(gradient_x, gradient_y, intensity=1):
     norm = np.sqrt(
         np.power(normal_map[..., 0], 2)
         + np.power(normal_map[..., 1], 2)
-        + np.power(normal_map[..., 2], 2)
+        + np.power(normal_map[..., 2], 2),
     )
 
     normal_map[..., 0] /= norm
@@ -193,14 +189,12 @@ def compute_normal_map(gradient_x, gradient_y, intensity=1):
 
 def get_normal_map(im, intensity=1.0):
     sobel_x, sobel_y = sobel(im)
-    normal_map = compute_normal_map(sobel_x, sobel_y, intensity)
-    return normal_map
+    return compute_normal_map(sobel_x, sobel_y, intensity)
 
 
 def get_normal_light(height_map_):
     normal_map_ = get_normal_map(height_map_)[:, :, 0:2].mean(axis=2)
-    normal_map_ = np.interp(normal_map_, (0, 1), (-1, 1))
-    return normal_map_
+    return np.interp(normal_map_, (0, 1), (-1, 1))
 
 
 def apply_height_map(im_map, smooth_map, height_map, land_mask):
@@ -241,15 +235,12 @@ def bezier_lut(x1, y1, x2, y2, a):
 def filter_map(h_map, smooth_h_map, x1, y1, x2, y2, a, b):
     f = bezier_lut(x1, y1, x2, y2, a)
     output_map = b * h_map + (1 - b) * smooth_h_map
-    output_map = f(output_map.clip(0, 1))
-    return output_map
+    return f(output_map.clip(0, 1))
 
 
 def get_boundary(vor_map, kernel=1, *, size):
     boundary_map = np.zeros_like(vor_map, dtype=bool)
     n, m = vor_map.shape
-
-    clip = lambda x: max(0, min(size - 1, x))
 
     def check_for_mult(a):
         b = a[0]
@@ -262,9 +253,13 @@ def get_boundary(vor_map, kernel=1, *, size):
         for j in range(m):
             boundary_map[i, j] = check_for_mult(
                 vor_map[
-                    clip(i - kernel) : clip(i + kernel + 1),
-                    clip(j - kernel) : clip(j + kernel + 1),
-                ].flatten()
+                    np.clip(i - kernel, 0, size - 1) : np.clip(
+                        i + kernel + 1, 0, size - 1
+                    ),
+                    np.clip(j - kernel, 0, size - 1) : np.clip(
+                        j + kernel + 1, 0, size - 1
+                    ),
+                ].flatten(),
             )
 
     return boundary_map
@@ -278,8 +273,7 @@ def filter_inbox(pts, *, size):
 def generate_trees(n, *, size):
     trees = np.random.randint(0, size - 1, (n, 2))
     trees = relax(trees, size, k=10).astype(np.uint32)
-    trees = filter_inbox(trees, size=size)
-    return trees
+    return filter_inbox(trees, size=size)
 
 
 def place_trees(n, mask, a=0.5, *, river_land_mask, adjusted_height_river_map, size):
@@ -292,5 +286,4 @@ def place_trees(n, mask, a=0.5, *, river_land_mask, adjusted_height_river_map, s
         output_trees * (mask > a) * river_land_mask * (adjusted_height_river_map < 0.5)
     )
 
-    output_trees = np.array(np.where(output_trees == 1))[::-1].T
-    return output_trees
+    return np.array(np.where(output_trees == 1))[::-1].T
