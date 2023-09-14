@@ -5,6 +5,7 @@ from scipy.interpolate import interp1d
 from scipy.spatial import Voronoi
 from skimage import exposure
 from skimage.draw import polygon
+from PIL import Image
 
 
 def voronoi(points, size):
@@ -72,6 +73,26 @@ def noise_map(size, res, seed, *, octaves=1, persistence=0.5, lacunarity=2.0, ma
     )
 
 
+def blur_boundaries(vor_map, *, size, map_seed, boundary_displacement=8):
+    boundary_noise = np.dstack(
+        [
+            noise_map(size, 32, 200, octaves=8, map_seed=map_seed),
+            noise_map(size, 32, 250, octaves=8, map_seed=map_seed),
+        ],
+    )
+    boundary_noise = np.indices((size, size)).T + boundary_displacement * boundary_noise
+    boundary_noise = np.clip(boundary_noise, 0, size - 1).astype(np.uint32)
+
+    blurred_vor_map = np.zeros_like(vor_map)
+
+    for x in range(size):
+        for y in range(size):
+            j, i = boundary_noise[x, y]
+            blurred_vor_map[x, y] = vor_map[i, j]
+
+    return blurred_vor_map
+
+
 def histeq(img, alpha=1):
     img_cdf, bin_centers = exposure.cumulative_distribution(img)
     img_eq = np.interp(img, bin_centers, img_cdf)
@@ -123,6 +144,53 @@ def color_cells(vor, data, dtype=int):
 def quantize(data, n):
     bins = np.linspace(-1, 1, n + 1)
     return (np.digitize(data, bins) - 1).clip(0, n - 1)
+
+
+def get_biomes(filename):
+    im = np.array(Image.open(filename))[:, :, :3]
+    biomes = np.zeros((256, 256))
+
+    biome_names = [
+        "desert",
+        "savanna",
+        "tropical_woodland",
+        "tundra",
+        "seasonal_forest",
+        "rainforest",
+        "temperate_forest",
+        "temperate_rainforest",
+        "boreal_forest",
+    ]
+    biome_colors = [
+        [255, 255, 178],
+        [184, 200, 98],
+        [188, 161, 53],
+        [190, 255, 242],
+        [106, 144, 38],
+        [33, 77, 41],
+        [86, 179, 106],
+        [34, 61, 53],
+        [35, 114, 94],
+    ]
+
+    for i, color in enumerate(biome_colors):
+        indices = np.where(np.all(im == color, axis=-1))
+        biomes[indices] = i
+
+    biomes = np.flip(biomes, axis=0).T
+
+    return biome_names, biome_colors, biomes
+
+
+def compute_biome_map(temperature_cells, precipitation_cells, biomes, vor_map):
+    n = len(temperature_cells)
+    biome_cells = np.zeros(n, dtype=np.uint32)
+
+    for i in range(n):
+        temp, precip = temperature_cells[i], precipitation_cells[i]
+        biome_cells[i] = biomes[temp, precip]
+
+    return fill_cells(vor_map, biome_cells).astype(np.uint32)
 
 
 def gradient(im_smooth):

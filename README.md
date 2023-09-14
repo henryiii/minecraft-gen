@@ -27,4 +27,6 @@ Process taken:
     * Remove commented out code that wasn't working
     * Simplify density example to a loop
     * Pull RNG out of the one function that used it
-
+* Make `compute_all` function
+   * Factor out a few more functions
+   * Remove a little duplicate code
