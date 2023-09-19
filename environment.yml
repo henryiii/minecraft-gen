@@ -11,3 +11,4 @@ dependencies:
   - noise
   - nb_conda_kernels
   - ipykernel
+  - pytest
