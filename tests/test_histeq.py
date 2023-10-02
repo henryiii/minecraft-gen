@@ -14,7 +14,7 @@ def test_histeq():
   img_cdf, bin_centers = exposure.cumulative_distribution(img_test)
   img_eq = np.interp(img_test, bin_centers, img_cdf)
   img_eq = np.interp(img_eq, (0, 1), (-1, 1))
-  hist_compare = alpha * img_eq + (1 - alpha) * img
+  hist_compare = alpha * img_eq + (1 - alpha) * img_test
   
   assert hist_test.shape == (3, 3)
   assert not np.isnan(hist_test).any()
