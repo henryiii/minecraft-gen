@@ -19,4 +19,4 @@ def test_histeq():
   assert hist_test.shape == (3, 3)
   assert not np.isnan(hist_test).any()
   assert not np.isinf(hist_test).any()
-  assert hist_test == hist_compare
+  assert hist_test == hist_compare.all()
