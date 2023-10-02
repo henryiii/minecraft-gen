@@ -2,6 +2,7 @@
 
 from minecraft_gen import histeq
 import numpy as np
+from skimage import exposure
 
 def test_histeq():
   img_test = np.ones((3,3))
