@@ -18,7 +18,8 @@ def test_quantize():
     assert (quantize(np.array([-1,-1,10.0]), 3) == np.array([0, 0, 2])).all()
     assert (quantize(np.array([-1,0,10.0]), 4) == np.array([0, 2, 3])).all()
 
-    # Test for output with known data 
+# Test for output with known data
+def test_quantize_random():
     gen = np.random.default_rng(42)
     data = gen.random(10)*2-1
     assert (quantize(data, 2) == np.array([1, 0, 1, 1, 0, 1, 1, 1, 0, 0])).all()
