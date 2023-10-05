@@ -20,3 +20,8 @@ repos:
     rev: "0.6.1"
     hooks:
       - id: nbstripout
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.291
+    hooks:
+    - id: ruff
+      args: ["--fix", "--show-fixes"]

@@ -32,3 +32,26 @@ log_cli_level = "info"
 testpaths = [
   "tests",
 ]
+
+[tool.ruff]
+select = [
+   "E", "F", "W",  # flake8
+   "B",            # flake8-bugbear
+   "I",            # isort
+   "ARG",          # flake8-unused-arguments
+   "C4",           # flake8-comprehensions
+   "EM",           # flake8-errmsg
+   "ICN",          # flake8-import-conventions
+   "ISC",          # flake8-implicit-str-concat
+   "PGH",          # pygrep-hooks
+   "PIE",          # flake8-pie
+   "PL",           # pylint
+   "PT",           # flake8-pytest-style
+   "RET",          # flake8-return
+   "RUF",          # Ruff-specific
+   "SIM",          # flake8-simplify
+   "T20",          # flake8-print
+   "UP",           # pyupgrade
+   "YTT",          # flake8-2020
+]
+ignore = ["PLR"]
