@@ -1,8 +1,9 @@
 # Last names: P
 
-from minecraft_gen import histeq
 import numpy as np
 from skimage import exposure
+
+from minecraft_gen import histeq
 
 
 def test_histeq():
