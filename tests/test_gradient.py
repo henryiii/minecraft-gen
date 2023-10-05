@@ -1,7 +1,8 @@
 # Last names: L, M
 
-from minecraft_gen import gradient
 import numpy as np
+
+from minecraft_gen import gradient
 
 
 def test_gradient():

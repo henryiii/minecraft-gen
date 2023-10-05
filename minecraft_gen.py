@@ -1,11 +1,11 @@
 import numpy as np
 from noise import snoise3
+from PIL import Image
 from scipy import ndimage
 from scipy.interpolate import interp1d
 from scipy.spatial import Voronoi
 from skimage import exposure
 from skimage.draw import polygon
-from PIL import Image
 
 
 def voronoi(points, size):

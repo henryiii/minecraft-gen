@@ -1,5 +1,6 @@
-from minecraft_gen import voronoi, voronoi_map
 import numpy as np
+
+from minecraft_gen import voronoi, voronoi_map
 
 
 def test_voronoi_map():

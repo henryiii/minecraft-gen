@@ -1,7 +1,8 @@
 # Last names: Q, R
-from minecraft_gen import compute_normal_map, get_normal_light, get_normal_map
 import numpy as np
 import pytest
+
+from minecraft_gen import get_normal_light
 
 
 def test_get_normal_light():
