@@ -10,5 +10,5 @@ def test_get_normal_light():
     
     assert result.shape == expected_result.shape
     tolerance = 1e-6
-    assert np.allclose(result, expected_result, rtol=tolerance, atol=tolerance)
+    assert result == pytest.approx(expected_result, rel=tolerance, abs=tolerance)
 
