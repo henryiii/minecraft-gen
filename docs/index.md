@@ -4,6 +4,7 @@
 :maxdepth: 2
 :hidden:
 
+api/minecraft_gen
 ```
 
 ```{include} ../README.md
