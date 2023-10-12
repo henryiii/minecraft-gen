@@ -29,9 +29,7 @@ plot = [
 addopts = ["-ra", "--showlocals", "--strict-markers", "--strict-config"]
 filterwarnings = ["error"]
 log_cli_level = "info"
-testpaths = [
-  "tests",
-]
+testpaths = ["tests"]
 
 [tool.ruff]
 select = [
@@ -55,3 +53,4 @@ select = [
    "YTT",          # flake8-2020
 ]
 ignore = ["PLR"]
+src = ["src"]
