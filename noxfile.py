@@ -75,3 +75,22 @@ def docs(session: nox.Session) -> None:
         session.run("sphinx-autobuild", *shared_args)
     else:
         session.run("sphinx-build", "--keep-going", *shared_args)
+
+
+@nox.session
+def build_api_docs(session: nox.Session) -> None:
+    """
+    Build (regenerate) API docs.
+    """
+
+    session.install("sphinx")
+    session.chdir("docs")
+    session.run(
+        "sphinx-apidoc",
+        "-o",
+        "api/",
+        "--module-first",
+        "--no-toc",
+        "--force",
+        "../src/minecraft_gen",
+    )
