@@ -1,5 +1,7 @@
 # Minecraft generation example project
 
+<!-- SPHINX-START -->
+
 ## History
 
 This example project was based on this MIT source:

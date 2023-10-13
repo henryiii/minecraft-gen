@@ -17,6 +17,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+docs = [
+  "sphinx",
+  "myst-parser",
+  "furo",
+]
 test = [
   "pytest",
 ]
