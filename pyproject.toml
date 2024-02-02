@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "minecraft-gen"
+version = "0.1.0"
+classifiers = [
+  "Private :: Do Not Upload",
+]
+dependencies = [
+  "numpy",
+  "scipy",
+  "scikit-image",
+  "noise",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest",
+]
+plot = [
+  "matplotlib",
+  "pillow",
+]
