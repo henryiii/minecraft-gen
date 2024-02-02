@@ -93,7 +93,7 @@ def blur_boundaries(vor_map, *, size, map_seed, boundary_displacement=8):
     return blurred_vor_map
 
 
-def histeq(img, alpha=1):
+def histeq(img, alpha=1.0):
     img_cdf, bin_centers = exposure.cumulative_distribution(img)
     img_eq = np.interp(img, bin_centers, img_cdf)
     img_eq = np.interp(img_eq, (0, 1), (-1, 1))
